@@ -82,12 +82,57 @@ public class ObligSBinTre<T> implements Beholder<T>
     @Override
     public boolean fjern(T verdi)
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if (verdi == null) return false;
+        Node<T> p = rot;
+        while (p != null) {
+            int cmp = comp.compare(verdi, p.verdi);
+            if (cmp < 0) p = p.venstre;
+            else if (cmp > 0) p = p.høyre;
+            else break;
+        }
+        if(p == null) return false;
+
+        Node<T> q = p.forelder;
+        if (p.venstre == null || p.høyre == null)
+        {
+            Node<T> b = p.venstre != null ? p.venstre : p.høyre;
+            if (p == rot) rot = b;
+            else if (p == q.venstre) q.venstre = b;
+            else q.høyre = b;
+
+            if(b != null) b.forelder = q;
+        }
+
+        else {
+            Node<T> s = p, r = p.høyre;
+            while (r.venstre != null)
+            {
+                s = r;
+                r = r.venstre;
+            }
+
+            p.verdi = r.verdi;
+
+            if (s != p) s.venstre = r.høyre;
+            else s.høyre = r.høyre;
+
+            if(r.høyre != null)
+                r.høyre.forelder = s;
+        }
+
+        antall--;
+        return true;
     }
 
     public int fjernAlle(T verdi)
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(verdi == null || rot == null) return 0;
+
+        int fjernet = antall(verdi);
+        for (int i = 0; i < fjernet; i++) {
+            fjern(verdi);
+        }
+        return fjernet;
     }
 
     @Override
@@ -123,7 +168,31 @@ public class ObligSBinTre<T> implements Beholder<T>
     @Override
     public void nullstill()
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(tom()) return;
+        nullstill(rot);
+        rot = null;
+        antall = 0;
+    }
+
+    private void nullstill(Node<T> p) {
+        if(p.venstre != null) {
+            nullstill(p.venstre);
+        }
+        if(p.høyre != null) {
+            nullstill(p.høyre);
+        }
+
+        if(p.venstre != null) {
+            p.venstre.forelder = null;
+        }
+        if(p.høyre != null) {
+            p.høyre.forelder = null;
+        }
+
+        p.venstre = null;
+        p.høyre = null;
+        p.verdi = null;
+
     }
 
     private static <T> Node<T> nesteInorden(Node<T> p)
@@ -193,7 +262,15 @@ public class ObligSBinTre<T> implements Beholder<T>
 
     public String høyreGren()
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(tom()) return "[]";
+
+        StringJoiner s = new StringJoiner(", ", "[", "]");
+        Node<T> p = rot;
+        while (p != null) {
+            s.add(p.verdi.toString());
+            p = p.høyre;
+        }
+        return s.toString();
     }
 
     public String lengstGren()
