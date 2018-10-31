@@ -242,7 +242,7 @@ public class ObligSBinTre<T> implements Beholder<T>
 
     public String omvendtString()
     {
-        ArrayDeque<Node> stakk = new ArrayDeque<>();
+        ArrayDeque<Node<T>> stakk = new ArrayDeque<>();
         Node<T> p = rot;
         StringJoiner s = new StringJoiner(", ", "[", "]");
 
@@ -273,10 +273,11 @@ public class ObligSBinTre<T> implements Beholder<T>
         return s.toString();
     }
 
-    public String lengstGren()
-    {
+    public String lengstGren() {
+
         throw new UnsupportedOperationException("Ikke kodet ennå!");
     }
+
 
     public String[] grener()
     {
@@ -285,12 +286,69 @@ public class ObligSBinTre<T> implements Beholder<T>
 
     public String bladnodeverdier()
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(rot == null) return "[]";
+
+        StringJoiner s = new StringJoiner(", ", "[", "]");
+        bladnodeverdier(rot, s);
+        return s.toString();
+    }
+
+    private void bladnodeverdier(Node<T> p, StringJoiner s) {
+        if(p.venstre != null) {
+            bladnodeverdier(p.venstre, s);
+        }
+        if(p.høyre != null) {
+            bladnodeverdier(p.høyre, s);
+        }
+        if(p.høyre == null && p.venstre == null) {
+            s.add(p.verdi.toString());
+        }
     }
 
     public String postString()
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        if(rot == null) return "[]";
+
+        StringJoiner s = new StringJoiner(", ", "[", "]");
+        Stack<Node<T>> deque = new Stack<>();
+        Node<T> p = rot;
+        Node<T> q = null;
+        deque.add(p);
+
+        while (!deque.isEmpty()) {
+            p = deque.peek();
+
+            if(q == null || p == q.venstre || p == q.høyre) {
+                if(p.venstre != null) {
+                    deque.push(p.venstre);
+                }
+                else if(p.høyre != null) {
+                    deque.push(p.høyre);
+                }
+                else {
+                    deque.pop();
+                    s.add(p.verdi.toString());
+                }
+            }
+
+            else if(p.venstre == q) {
+                if(p.høyre != null) {
+                    deque.add(p.høyre);
+                }
+                else {
+                    deque.pop();
+                    s.add(p.toString());
+                }
+            }
+            else if(p.høyre == q) {
+                deque.pop();
+                s.add(p.verdi.toString());
+            }
+
+            q = p;
+        }
+
+        return s.toString();
     }
 
     @Override
