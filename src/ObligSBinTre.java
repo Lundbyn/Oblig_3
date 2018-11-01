@@ -60,6 +60,7 @@ public class ObligSBinTre<T> implements Beholder<T>
         else if (cmp < 0) q.venstre = p;         // venstre barn til q
         else q.høyre = p;                        // høyre barn til q
 
+        endringer++;
         antall++;                                // én verdi mer i treet
         return true;                             // vellykket innlegging
     }
@@ -120,6 +121,7 @@ public class ObligSBinTre<T> implements Beholder<T>
                 r.høyre.forelder = s;
         }
 
+        endringer++;
         antall--;
         return true;
     }
@@ -171,6 +173,7 @@ public class ObligSBinTre<T> implements Beholder<T>
         if(tom()) return;
         nullstill(rot);
         rot = null;
+        endringer++;
         antall = 0;
     }
 
@@ -266,9 +269,16 @@ public class ObligSBinTre<T> implements Beholder<T>
 
         StringJoiner s = new StringJoiner(", ", "[", "]");
         Node<T> p = rot;
-        while (p != null) {
+        s.add(p.verdi.toString());
+        while (true) {
+            if (p.høyre != null) {
+                p = p.høyre;
+            }
+            else if (p.venstre != null) {
+                p = p.venstre;
+            }
+            else break;
             s.add(p.verdi.toString());
-            p = p.høyre;
         }
         return s.toString();
     }
@@ -365,7 +375,12 @@ public class ObligSBinTre<T> implements Beholder<T>
 
         private BladnodeIterator() // konstruktør
         {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+            if(tom()) return;
+
+            while (p.venstre != null || p.høyre != null) {
+                while (p.venstre != null) p = p.venstre;
+                while (p.høyre != null && p.venstre == null) p = p.høyre;
+            }
         }
 
         @Override
@@ -377,13 +392,37 @@ public class ObligSBinTre<T> implements Beholder<T>
         @Override
         public T next()
         {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+            if(!hasNext()) throw new NoSuchElementException("Ingen verdier");
+            if(iteratorendringer != endringer) throw new ConcurrentModificationException("Det er gjort endriner siden iteratoren startet");
+
+            T verdi = p.verdi;
+            q = p;
+            p = nesteInorden(p);
+
+            if(p != null) {
+                while (p.venstre != null || p.høyre != null) {
+                    p = nesteInorden(p);
+                }
+            }
+            removeOK = true;
+            return verdi;
         }
 
         @Override
         public void remove()
         {
-            throw new UnsupportedOperationException("Ikke kodet ennå!");
+            if(!removeOK) throw new IllegalStateException("Kan ikke fjerne");
+
+            Node<T> r = q.forelder;
+            System.out.println(q.verdi);
+            if(r == null) rot = null;
+            else if(r.venstre == q) r.venstre = null;
+            else r.høyre = null;
+
+            iteratorendringer++;
+            endringer++;
+            antall--;
+            removeOK = false;
         }
     } // BladnodeIterator
 
