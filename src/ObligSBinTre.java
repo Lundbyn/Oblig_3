@@ -284,14 +284,88 @@ public class ObligSBinTre<T> implements Beholder<T>
     }
 
     public String lengstGren() {
+        if(tom()) return "[]";
+        int lengde = maxLengde(rot);
+        ArrayDeque<Node<T>> noder = new ArrayDeque<>();
+        Node<T> p = rot;
+        noder.addLast(p);
 
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        int level = 1;
+        int atLevel = 2^(level-1);
+        while (level <= lengde) {
+            for(int i = 0; i < atLevel; i++) {
+                if(!noder.isEmpty()) {
+                    p = noder.removeFirst();
+                }
+                if(p.høyre != null) {
+                    noder.addLast(p.høyre);
+                }
+                if(p.venstre != null) {
+                    noder.addLast(p.venstre);
+                }
+            }
+            level++;
+            atLevel = 2^(level-1);
+        }
+
+        ArrayDeque<String> string = new ArrayDeque<>();
+        while (p != null) {
+            string.addFirst(p.verdi.toString());
+            p = p.forelder;
+        }
+        return string.toString();
+    }
+
+    private int maxLengde(Node<T> p) {
+        if (p == null)
+            return 0;
+        else
+        {
+            int leftLengde = maxLengde(p.venstre);
+            int rightLengde = maxLengde(p.høyre);
+
+            if (leftLengde > rightLengde)
+                return (leftLengde + 1);
+            else
+                return (rightLengde + 1);
+        }
     }
 
 
-    public String[] grener()
+    public String[] grener() {
+        ArrayDeque<String> grener = new ArrayDeque<>();
+        if(!tom()) {
+            finnGrener(rot, grener);
+        }
+        return grener.toArray(new String[0]);
+    }
+
+    public void finnGrener(Node<T> p, ArrayDeque<String> grener)
     {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        Stack<Node<T>> noder = new Stack<>();
+        ArrayDeque<String> gren = new ArrayDeque<>();
+        noder.push(p);
+
+        while(!noder.isEmpty()) {
+            Node<T> q = noder.peek();
+            noder.pop();
+
+            if(q.høyre != null) {
+                noder.push(q.høyre);
+            }
+            if(q.venstre != null) {
+                noder.push(q.venstre);
+            }
+
+            if(q.venstre == null && q.høyre == null) {
+                while (q != null) {
+                    gren.addFirst(q.verdi.toString());
+                    q = q.forelder;
+                }
+                grener.add(gren.toString());
+                gren.clear();
+            }
+        }
     }
 
     public String bladnodeverdier()
@@ -376,11 +450,13 @@ public class ObligSBinTre<T> implements Beholder<T>
         private BladnodeIterator() // konstruktør
         {
             if(tom()) return;
+            p = rot;
 
             while (p.venstre != null || p.høyre != null) {
                 while (p.venstre != null) p = p.venstre;
                 while (p.høyre != null && p.venstre == null) p = p.høyre;
             }
+            q = p;
         }
 
         @Override
@@ -400,7 +476,7 @@ public class ObligSBinTre<T> implements Beholder<T>
             p = nesteInorden(p);
 
             if(p != null) {
-                while (p.venstre != null || p.høyre != null) {
+                while (p!= null && (p.høyre != null || p.venstre != null)) {
                     p = nesteInorden(p);
                 }
             }
@@ -414,7 +490,6 @@ public class ObligSBinTre<T> implements Beholder<T>
             if(!removeOK) throw new IllegalStateException("Kan ikke fjerne");
 
             Node<T> r = q.forelder;
-            System.out.println(q.verdi);
             if(r == null) rot = null;
             else if(r.venstre == q) r.venstre = null;
             else r.høyre = null;
