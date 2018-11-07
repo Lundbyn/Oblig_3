@@ -1,0 +1,40 @@
+Author: Mezzeto <Mathias_Lundby@hotmail.com>
+Date:   Thu Nov 1 14:29:56 2018 +0100
+
+    Oblig ferdig, består alle tester
+
+commit 7911ae1be7010d12b399b64cd4fd5292296925c2
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Thu Nov 1 09:00:55 2018 +0100
+
+    minor changes
+
+commit 9df2afa88846b8be639779990f5ac0c8f578a4c7
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Wed Oct 31 11:02:08 2018 +0100
+
+    Oppgave 8 gjort
+
+commit 88384ab258a7578e968cc8efab488d5b8041c910
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Tue Oct 30 15:50:55 2018 +0100
+
+    Oppgave 5 ferdig, 6 startet
+
+commit c3966ba79f0afe97f88c843c75f86fec99352fff
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Tue Oct 30 12:50:17 2018 +0100
+
+    Oppgave 4 ferdig
+
+commit f12ce5505b4151e6c2d6aad690ae6a0de78a645a
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Tue Oct 30 11:44:05 2018 +0100
+
+    Oppgave 1,2 og 3 gjort
+
+commit 9d19d17730d99bd40d9458a8454341ac13fb79f7
+Author: Lundbyn <36439626+Lundbyn@users.noreply.github.com>
+Date:   Tue Oct 30 11:10:06 2018 +0100
+
+    Initial commit
